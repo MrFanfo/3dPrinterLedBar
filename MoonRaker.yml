@@ -1,0 +1,91 @@
+alias: Led Stampanti Cucina V0.2
+description: ""
+triggers:
+  - entity_id: sensor.flygemini_current_print_state
+    trigger: state
+  - trigger: time_pattern
+    minutes: /5
+actions:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: sensor.flygemini_current_print_state
+            state: error
+        sequence:
+          - target:
+              entity_id: light.esphome_web_5e2c58_led_stampante_3
+            data:
+              color_name: red
+              flash: short
+              brightness: 255
+            action: light.turn_on
+          - action: notify.mobile_app_iphone_rabanaldo
+            metadata: {}
+            data:
+              message: Stronzetta in error!
+      - conditions:
+          - condition: state
+            entity_id: sensor.flygemini_current_print_state
+            state: standby
+        sequence:
+          - target:
+              entity_id: light.esphome_web_5e2c58_led_stampante_3
+            data:
+              kelvin: 6500
+              brightness_pct: 100
+            action: light.turn_on
+      - conditions:
+          - condition: state
+            entity_id: sensor.flygemini_current_print_state
+            state: paused
+        sequence:
+          - target:
+              entity_id: light.esphome_web_5e2c58_led_stampante_3
+            data:
+              color_name: yellow
+              brightness: 255
+            action: light.turn_on
+      - conditions:
+          - condition: state
+            entity_id: sensor.flygemini_current_print_state
+            state: printing
+        sequence:
+          - target:
+              entity_id: light.esphome_web_5e2c58_led_stampante_3
+            data:
+              color_name: blue
+              brightness: 255
+            action: light.turn_on
+      - conditions:
+          - condition: state
+            entity_id: sensor.flygemini_current_print_state
+            state: complete
+        sequence:
+          - target:
+              entity_id: light.esphome_web_5e2c58_led_stampante_3
+            data:
+              color_name: green
+              brightness: 255
+            action: light.turn_on
+      - conditions:
+          - condition: state
+            entity_id: sensor.flygemini_current_print_state
+            state: cancelled
+        sequence:
+          - target:
+              entity_id: light.esphome_web_5e2c58_led_stampante_3
+            data:
+              color_name: red
+              brightness: 255
+            action: light.turn_on
+      - conditions:
+          - condition: state
+            entity_id: sensor.flygemini_current_print_state
+            state: unavailable
+        sequence:
+          - target:
+              entity_id: light.esphome_web_5e2c58_led_stampante_3
+            data:
+              kelvin: 6500
+              brightness_pct: 20
+            action: light.turn_on
